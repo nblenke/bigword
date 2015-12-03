@@ -125,30 +125,6 @@
         i,
         prev,
         util = {
-            gapi: function (url, fnk, num, key) {
-                if (url == null) {
-                    return false;
-                }
-                var gurl = "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&callback=?&q=" + encodeURIComponent(url);
-                if (num != null) {
-                    gurl += "&num=" + num;
-                }
-                if (key != null) {
-                    gurl += "&key=" + key;
-                }
-                $.getJSON(gurl, function (data) {
-                    if (typeof fnk == 'function') {
-                        try {
-                            fnk.call(this, data.responseData.feed);
-                        } catch (e) {
-                            console.log(gurl, e)
-                        }
-                    } else {
-                        return false;
-                    }
-                    numRequests += 1;
-                });
-            },
             aMax: function (array) {
                 return Math.max.apply(Math, array);
             },
@@ -222,16 +198,26 @@
         },
         build = function (arr) {
             _.each(arr, function (feed) {
-                util.gapi(feed.url, function (response) {
-                    var arr = [];
-                    _.each(response.entries, function (item) {
+                var arr = [];
+                var url = 'https://query.yahooapis.com/v1/public/yql?q=SELECT%20*%20FROM%20xml%20WHERE%20url%3D%22' +
+                    encodeURIComponent(feed.url) + '%22' +
+                    '&format=json&diagnostics=true&callback=';
+
+                $.getJSON(url, function (response) {
+                    numRequests += 1;
+                    if(!response.query.results) {
+                        return;
+                    }
+                    _.each(response.query.results.rss.channel.item, function (item) {
+
                         arr.push({
                             title: item.title,
                             link: item.link
                         });
                     });
+                    console.log(arr, feed.name);
                     process(arr, feed.name);
-                }, 100);
+                });
             });
         },
         process = function (arrHeadlines, feedName) {
@@ -408,10 +394,10 @@
         var feeds = [
             {name: 'Google News', url: 'http://news.google.com/?output=rss&num=100'},
             {name: 'Yahoo News', url: 'http://news.yahoo.com/rss/'},
-            {name: 'Reddit', url: 'http://www.reddit.com/.rss'},
+            //{name: 'Reddit', url: 'http://www.reddit.com/.rss'},
             {name: 'Newsvine', url: 'https://www.newsvine.com/_feeds/rss2/cs?id=38&n=6&s=av'},
             {name: 'Bing', url: 'http://www.bing.com/news?q=top+stories&format=RSS'},
-            {name: 'AP', url: 'http://hosted2.ap.org/atom/APDEFAULT/3d281c11a96b4ad082fe88aa0db04305'},
+            //{name: 'AP', url: 'http://hosted2.ap.org/atom/APDEFAULT/3d281c11a96b4ad082fe88aa0db04305'},
             {name: 'BBC', url: 'http://feeds.bbci.co.uk/news/rss.xml'},
             {name: 'Reuters', url: 'http://feeds.reuters.com/reuters/topNews'},
             {name: 'CNN', url: 'http://rss.cnn.com/rss/cnn_topstories.rss'},
