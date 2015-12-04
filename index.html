@@ -215,7 +215,6 @@
                             link: item.link
                         });
                     });
-                    console.log(arr, feed.name);
                     process(arr, feed.name);
                 });
             });
@@ -248,6 +247,9 @@
                     string: date.toString()
                 }
                 _.each(headlines, function (headline) {
+                    if (!headline.title) {
+                        return;
+                    }
                     var clean = headline.title.replace(/(\?|\!|\&|\...|\-|\:|,|\')/g, ''),
                         // strip = headline.title.replace(/[\n\r]/g, '').replace(/\d/g,'').replace(/[^a-zA-Z0-9\s]/g,''),
                         pushArr = clean.split(' ');
@@ -286,6 +288,9 @@
                 data.total = master.length;
                 data.feedNames = feedNames;
                 _.each(headlines, function (h) {
+                    if (!h.title) {
+                        return;
+                    }
                     if (h.title.toLowerCase().search(' ' + data.word.toLowerCase() + ' ') !== -1) {
                         data.headlines.push(h);
                     }
