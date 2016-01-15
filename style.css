@@ -1,0 +1,106 @@
+body {
+    font-family: 'Droid Serif', serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+h1 {
+    font-family: 'Alfa Slab One', serif;
+    font-weight: 200;
+    font-size: 60px;
+    line-height: 1;
+    margin: 20px 0
+}
+h1 sup {
+    top: .1em;
+    color: #ccc;
+    font-size: 70px;
+    font-weight: normal;
+}
+p.lead {
+    font-family: 'Playfair Display SC', cursive;
+    font-size: 25px
+}
+p.lead:first-child {
+    margin: 30px 0 0
+}
+h4 {
+    font-family: 'Playfair Display SC', serif;
+    margin: 30px 0 10px
+}
+h6 {
+    font-size: 20px;
+    line-height: 1.5
+}
+.hide {
+    display: none
+}
+li {
+    padding: 7px 0;
+    color: #888
+}
+.container-fluid {
+    max-width: 640px;
+    margin: 0 auto 200px
+}
+.total span {
+    color: darkorange;
+}
+.words {
+    margin: 0 0 25px
+}
+a {
+    color: #333
+}
+a:hover {
+    color: #444
+}
+.hilite {
+    padding: 1px 5px;
+    background: #f1f1f1;
+    color: #222;
+    outline: 1px solid #eee;
+}
+.hilite,
+table {
+    box-shadow: 1px 3px 4px 0 rgba(0, 0, 0, 0.3)
+}
+table {
+    background: #fff
+}
+.table td {
+    line-height: 30px;
+    text-align: center
+}
+table td:first-child {
+    font-weight: bold;
+    font-size: 23px;
+    color: #333;
+    font-family: 'Playfair Display SC', cursive;
+}
+table td:first-child sup {
+    color: #999;
+    top: 0;
+    font-size: 23px;
+}
+.w1 {
+    font-size: 36px;
+}
+.w2 {
+    font-size: 24px;
+    color: #555;
+}
+.w3 {
+    font-size: 17px;
+    color: #777;
+}
+.w4 {
+    font-size: 11px;
+    color: #999;
+}
+.loading {
+    width: 200px;
+    margin: 15% auto 0;
+    text-align: center
+}
+.footer {
+    margin: 30px 0 0;
+}
