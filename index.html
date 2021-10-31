@@ -1,97 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<head>
-<title>Big Word</title>
-<link href="http://fonts.googleapis.com/css?family=Alfa+Slab+One|Droid+Sans:400,700|Droid+Serif:400,700|Playfair+Display+SC" rel="stylesheet">
-<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-<link href="style.css" rel="stylesheet">
-</head>
-<body>
-<div class="container-fluid">
-    <div id="placeholder">
+  <head>
+    <title>Big Word</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="An experiment to find the most common word being used in the current top news headlines."
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Alfa+Slab+One|Droid+Sans:400,700|Droid+Serif:400,700|Playfair+Display+SC"
+      rel="stylesheet"
+    />
+    <link
+      href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div id="placeholder">
         <div class="loading">
-            <p>Loading...</p>
-            <div class="progress progress-info progress-striped active">
-              <div class="bar"></div>
-            </div>
+          <p>Loading...</p>
+          <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+          </div>
         </div>
+      </div>
+      <p class="footer muted"></p>
     </div>
-    <p class="footer muted"></p>
-</div>
-<script type="text/template" id="current-tmpl">
-    <p class="lead total">
-        {{if date.pretty}}
-            On <span>${date.pretty}</span> the Big Word was...
-        {{else}}
-            The Big Word right now is...
-        {{/if}}
-    </p>
-    <h1><sup>&ldquo;</sup>${word}<sup>&rdquo;</sup></h1>
-    <h6 class="total">In <span>${headlineCount}</span> news headlines, out of <span>${total}</span> words,
-        the word <span>${word}</span> appears <span>${count}</span> times.</h6>
-    <h4>In the News</h4>
-    <ul class="headlines">
-        {{each(i, h) headlines}}
-            <li{{if i > 4}} class="hide"{{/if}}><a href="${h.link}">${h.title}</a></li>
-        {{/each}}
-    </ul>
-    <a href="" class="more more-headlines">More</a>
-    <h4>Popular Words by Weight</h4>
-    <p class="words">
-        {{each(i, w) words}}
-            <a href="http://www.google.com/search?tbm=nws&q=${w[0]}" class="${w[2]}">${w[0]}</a>
-        {{/each}}
-    </p>
-    {{if svgSupported}}
-        <h4>Popular Words by Count</h4>
-        <div id="chart0"></div>
-    {{/if}}
-    <h4>Previous Words</h4>
-    <p>There are <span id="historyCount"></span> previous words.</p>
-    <table class="table table-bordered table-hover table-striped table-previous-words" id="history-table">
-    </table>
-    <div class="row text-center">
-        <button class="btn btn-large" id="history-more">Show More</button>
-    </div>
-    <h4>Sources</h4>
-    <p>
-        {{each(i, f) feedNames}}
-            ${f}{{if i !== feedNames.length - 1}}, {{/if}}
-        {{/each}}
-    </p>
-    <h4>Excluded Words</h4>
-    <p>
-        {{each(i, v) exclude}}
-            ${v}{{if i !== exclude.length - 1}}, {{/if}}
-        {{/each}}
-    </p>
-</script>
-<script type="text/template" id="history-tmpl">
-    <tr>
-        <td><sup>&ldquo;</sup><a href="#" data-sort="${date.sort}">${word}</a><sup>&rdquo;</sup></td>
-        <td><a href="#" data-sort="${date.sort}">${date.pretty}</a></td>
-    </tr>
-</script>
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-<script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
-<script src="http://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
-<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
-<script src="https://www.google.com/jsapi"></script>
-<script src="app.js"></script>
 
-<script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <script type="text/template" id="current-tmpl">
+        <p class="lead total">
+          {{if date.pretty}}
+              On <span>${date.pretty}</span> the Big Word was...
+          {{else}}
+              The Big Word right now is...
+          {{/if}}
+      </p>
+      <h1><sup>&ldquo;</sup>${word}<sup>&rdquo;</sup></h1>
+      <h6 class="total">In <span>${headlineCount}</span> news headlines, out of <span>${total}</span> words,
+          the word <span>${word}</span> appears <span>${count}</span> times.</h6>
+      <h4>In the News</h4>
+      <ul class="headlines">
+          {{each(i, h) headlines}}
+              <li {{if i > 4}} class="hide"{{/if}}><a href="${h.link}">${h.title}</a></li>
+          {{/each}}
+      </ul>
+      {{if headlines.length > 5}}
+        <a href="" class="more more-headlines">More</a>
+      {{/if}}
+      <h4>Popular Words by Weight</h4>
+      <p class="words">
+          {{each(i, w) words}}
+              {{if word === w[0]}}
+                <a href="http://www.google.com/search?tbm=nws&q=${w[0]}" class="${w[2]} top">${w[0]}</a>
+              {{else}}
+                <a href="http://www.google.com/search?tbm=nws&q=${w[0]}" class="${w[2]}">${w[0]}</a>
+              {{/if}}
+          {{/each}}
+      </p>
 
-    ga('create', 'UA-59291451-1', 'auto');
-    ga('send', 'pageview');
-</script>
-</body>
+      <h4>Popular Words by Count</h4>
+      <div id="chart0"></div>
+
+      <h4>Previous Big Words</h4>
+      <table class="table table-bordered table-hover table-striped table-previous-words" id="history-table">
+          <tr>
+              <td>
+                  <div class="spinner">
+                      <div class="bounce1"></div>
+                      <div class="bounce2"></div>
+                      <div class="bounce3"></div>
+                  </div>
+              </td>
+          </tr>
+      </table>
+
+      <h4>Sources</h4>
+      <p>
+          {{each(i, f) feedNames}}
+              ${f}{{if i !== feedNames.length - 1}}, {{/if}}
+          {{/each}}
+      </p>
+
+      <p class="last-updated">Last updated on ${lastUpdated}</p>
+    </script>
+
+    <script type="text/template" id="history-tmpl">
+      <tr>
+          <td><sup>&ldquo;</sup><a href="#" data-sort="${date.sort}">${word}</a><sup>&rdquo;</sup></td>
+          <td><a href="" data-sort="${date.sort}">${date.pretty}</a></td>
+      </tr>
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="app.js"></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-59291451-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+  </body>
 </html>
