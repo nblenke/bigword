@@ -32,7 +32,7 @@ const getLocaleDateFromStr = function(str) {
 }
 
 const loadHistory = function() {
-  fetch('https://bigwo.herokuapp.com/archive')
+  fetch('https://www.blarpf.com/api/bigword/archive')
     .then((r) => r.json())
     .then((archive) => {
       const setHistoryTable = (arr) => {
@@ -150,7 +150,7 @@ const drawChart = function() {
   }, 0)
 }
 
-fetch('https://bigwo.herokuapp.com/word')
+fetch('https://www.blarpf.com/api/bigword/word')
   .then((r) => r.json())
   .then((data) => {
     lastUpdated = data.date.string
