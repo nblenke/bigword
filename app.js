@@ -1,24 +1,20 @@
 let currentData = {}
 let lastUpdated
-let historyLoaded = false
+let archiveLoaded = false
 
-const hilite = function(word, el) {
+const hilite = function (word, el) {
   var rgxp = new RegExp(word, 'gi'),
     repl = '<span class="hilite">' + word + '</span>'
-  $(el).each(function() {
-    $(this).html(
-      $(this)
-        .html()
-        .replace(rgxp, repl)
-    )
+  $(el).each(function () {
+    $(this).html($(this).html().replace(rgxp, repl))
   })
 }
 
-const commafy = function(x) {
+const commafy = function (x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-const getLocaleDateFromStr = function(str) {
+const getLocaleDateFromStr = function (str) {
   const date = new Date(str)
   const options = {
     weekday: 'long',
@@ -31,62 +27,91 @@ const getLocaleDateFromStr = function(str) {
   return `${localeDate} ${localeTime}`
 }
 
-const loadHistory = function() {
-  fetch('https://www.blarpf.com/api/bigword/archive')
-    .then((r) => r.json())
-    .then((archive) => {
-      const setHistoryTable = (arr) => {
-        $('#historyCount').html(arr.length)
-        $('#history-table')
-          .empty()
-          .append($('#history-tmpl').tmpl(arr))
-      }
+const pageSize = 10
+const $moreBtn = $('<button id="more" class="more-btn">Show More</button>')
+const archiveTableSelector = '#archive-table'
+let page = 1
+let numPages = 0
+let archive = {}
 
-      archive.items = archive.items.map((data) => {
+const getArchivePage = async (page) => {
+  return fetch(`/api/bigword/archive/${page}/${pageSize}`)
+    .then((r) => r.json())
+    .then((json) => {
+      json.results = json.results.map((data) => {
         data.date.pretty = getLocaleDateFromStr(data.date.string)
         return data
       })
-
-      setHistoryTable(archive.items)
-
-      $('body').on('click', '#history-table a', function(ev) {
-        ev.preventDefault()
-        window.scrollTo(0, 0)
-
-        const word = archive.items.find(
-          ({date}) => date.sort === $(this).data('sort')
-        )
-        currentData = updateDataProps(word)
-        populateTemplate()
-        drawChart()
-        setHistoryTable(archive.items)
-      })
+      numPages = Math.ceil(archive.total / pageSize)
+      return json
     })
 }
 
-const populateTemplate = function() {
+const setArchiveTable = () => {
+  $(archiveTableSelector)
+    .html($('#archive-tmpl').tmpl(archive.results))
+    .parent()
+    .addClass('show')
+}
+
+const archiveInit = async () => {
+  archive = await getArchivePage(page)
+  setArchiveTable()
+
+  if (archive.total > pageSize) {
+    $(archiveTableSelector).after($moreBtn)
+  }
+}
+
+$('body').on('click', '#more', async () => {
+  page += 1
+  const nextPage = await getArchivePage(page)
+  archive.results = [...archive.results, ...nextPage.results]
+  setArchiveTable()
+  if (page >= numPages) {
+    $('#more').addClass('hide')
+  }
+})
+
+$('body').on('click', '#archive-table a', function (ev) {
+  ev.preventDefault()
+  window.scrollTo(0, 0)
+
+  const word = archive.results.find(
+    ({date}) => date.sort === $(this).data('sort')
+  )
+  currentData = updateDataProps(word)
+  populateTemplate()
+  drawChart()
+  setArchiveTable()
+  if (archive.results.length < archive.total) {
+    $(archiveTableSelector).after($moreBtn)
+  }
+})
+
+const populateTemplate = function () {
   $('#placeholder').html($('#current-tmpl').tmpl(currentData))
   hilite(currentData.word, '.headlines a')
 }
 
-const setHistoryObserver = function() {
+const setArchiveIntersectObserver = function () {
   const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !historyLoaded) {
-      loadHistory()
-      historyLoaded = true
+    if (entries[0].isIntersecting && !archiveLoaded) {
+      archiveInit()
+      archiveLoaded = true
     }
   })
-  observer.observe(document.querySelector('#history-table'))
+  observer.observe(document.querySelector(archiveTableSelector))
 }
 
-const updateDataProps = function(data) {
+const updateDataProps = function (data) {
   data.total = commafy(data.total)
   data.lastUpdated = getLocaleDateFromStr(lastUpdated)
   currentData = data
   return data
 }
 
-const drawChart = function() {
+const drawChart = function () {
   var data = currentData
   var chartArr = [],
     chartData = new google.visualization.DataTable(),
@@ -101,19 +126,19 @@ const drawChart = function() {
       },
     }
   _.each(
-    _.filter(data.words, function(w) {
+    _.filter(data.words, function (w) {
       return w[2] === 'w1' || w[2] === 'w2'
     }),
-    function(w) {
+    function (w) {
       chartArr.push(_.initial(w))
     }
   )
   if (!chartArr.length) {
     _.each(
-      _.filter(data.words, function(w) {
+      _.filter(data.words, function (w) {
         return w[2] === 'w3'
       }),
-      function(w) {
+      function (w) {
         chartArr.push(_.initial(w))
       }
     )
@@ -143,23 +168,23 @@ const drawChart = function() {
   )
   setTimeout(() => {
     $('#chart0 text')
-      .filter(function() {
+      .filter(function () {
         return $(this).text() === data.word
       })
       .css('fill', 'darkorange')
   }, 0)
 }
 
-fetch('https://www.blarpf.com/api/bigword/word')
+fetch('/api/bigword/word')
   .then((r) => r.json())
   .then((data) => {
     lastUpdated = data.date.string
     currentData = updateDataProps(data)
 
     populateTemplate()
-    setHistoryObserver()
+    setArchiveIntersectObserver()
 
-    $('body').on('click', '.more-headlines', function() {
+    $('body').on('click', '.more-headlines', function () {
       $(this).hide()
       $('.headlines li.hide').slideDown()
       return false

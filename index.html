@@ -69,17 +69,19 @@
       <div id="chart0"></div>
 
       <h4>Previous Big Words</h4>
-      <table class="table table-bordered table-hover table-striped table-previous-words" id="history-table">
-          <tr>
-              <td>
-                  <div class="spinner">
-                      <div class="bounce1"></div>
-                      <div class="bounce2"></div>
-                      <div class="bounce3"></div>
-                  </div>
-              </td>
-          </tr>
-      </table>
+      <div class="archive-wrap">
+          <table class="table table-bordered table-hover table-striped table-previous-words" id="archive-table">
+              <tr>
+                  <td>
+                      <div class="spinner">
+                          <div class="bounce1"></div>
+                          <div class="bounce2"></div>
+                          <div class="bounce3"></div>
+                      </div>
+                  </td>
+              </tr>
+          </table>
+      </div>
 
       <h4>Sources</h4>
       <p>
@@ -91,7 +93,7 @@
       <p class="last-updated">Last updated on ${lastUpdated}</p>
     </script>
 
-    <script type="text/template" id="history-tmpl">
+    <script type="text/template" id="archive-tmpl">
       <tr>
           <td><sup>&ldquo;</sup><a href="#" data-sort="${date.sort}">${word}</a><sup>&rdquo;</sup></td>
           <td><a href="" data-sort="${date.sort}">${date.pretty}</a></td>
@@ -108,14 +110,5 @@
     <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
     <script src="https://www.google.com/jsapi"></script>
     <script src="app.js"></script>
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-59291451-1', 'auto');
-        ga('send', 'pageview');
-    </script>
   </body>
 </html>
